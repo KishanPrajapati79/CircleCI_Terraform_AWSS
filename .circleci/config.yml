@@ -4,47 +4,36 @@ version: 2.1
 orbs:
   terraform: circleci/terraform@3.1
 workflows:
-  # test-env-vars:
-  #   jobs:
-  #     - build:
-  #         context: awsid_rsa.pub
   deploy_infra:
     jobs:
-    - terraform/fmt:
-          checkout: true
-          context: terraform
-    - terraform/validate:
-        checkout: true
-        context: terraform
-        # environment:
-        #     TF_VAR_public_key: $id_rsa
-    - terraform/plan:
-        checkout: true
-        context: terraform
-        persist-workspace: true
-        # environment:
-        #     TF_VAR_public_key: $id_rsa
-        requires:
-        - terraform/validate
-    - terraform/apply:
-        attach-workspace: true
-        context: terraform
-        # environment:
-        #     TF_VAR_public_key: $id_rsa
-        filters:
-          branches:
-            only: main
-        requires:
-        - terraform/plan
+    # - terraform/fmt:
+    #       checkout: true
+    #       context: terraform
+    # - terraform/validate:
+    #     checkout: true
+    #     context: terraform
+    # - terraform/plan:
+    #     checkout: true
+    #     context: terraform
+    #     persist-workspace: true
+    #     requires:
+    #     - terraform/validate
+    # - terraform/apply:
+    #     attach-workspace: true
+    #     context: terraform
+    #     filters:
+    #       branches:
+    #         only: main
+    #     requires:
+    #     - terraform/plan
+    - destroy_infra:
+          executor:
+            name: terraform/default
+          steps:
+            - checkout
+            - run:
+                name: Terraform Destroy
+                command: |
+                  terraform init -backend-config="bucket=tfdemostatebucket" -backend-config="key=kishan/circleci.tfstate" -backend-config="region=ap-south-1"
+                  terraform destroy -auto-approve
 
-# jobs:
-#   terraform/plan:
-#     executor:
-#       name: terraform/default
-#     steps:
-#       - checkout
-#       - run:
-#           name: Terraform Plan
-#           command: |
-#             export TF_VAR_public_key="$id_rsa"
-#             terraform plan
