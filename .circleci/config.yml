@@ -22,17 +22,29 @@ workflows:
         checkout: true
         context: terraform
         persist-workspace: true
-        environment:
-            TF_VAR_public_key: $id_rsa
+        # environment:
+        #     TF_VAR_public_key: $id_rsa
         requires:
         - terraform/validate
     - terraform/apply:
         attach-workspace: true
         context: terraform
-        environment:
-            TF_VAR_public_key: $id_rsa
+        # environment:
+        #     TF_VAR_public_key: $id_rsa
         filters:
           branches:
             only: main
         requires:
         - terraform/plan
+
+# jobs:
+#   terraform/plan:
+#     executor:
+#       name: terraform/default
+#     steps:
+#       - checkout
+#       - run:
+#           name: Terraform Plan
+#           command: |
+#             export TF_VAR_public_key="$id_rsa"
+#             terraform plan
