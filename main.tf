@@ -22,7 +22,7 @@ variable "cidr" {
 
 resource "aws_key_pair" "example" {
   key_name   = "terraform-demo-kishan"
-  public_key = file("id_rsa.pub")
+  public_key = var.public_key
 }
 
 resource "aws_vpc" "myvpctf" {
@@ -95,7 +95,7 @@ resource "aws_instance" "server" {
   connection {
     type        = "ssh"
     user        = "ubuntu"                           
-    private_key = var.id_rsa  
+    private_key = var.public_key  
     host        = self.public_ip
   }
   # File provisioner to copy a file from local to the remote EC2 instance

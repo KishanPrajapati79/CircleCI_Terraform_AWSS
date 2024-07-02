@@ -16,15 +16,21 @@ workflows:
     - terraform/validate:
         checkout: true
         context: terraform
+        environment:
+            TF_VAR_public_key: $id_rsa
     - terraform/plan:
         checkout: true
         context: terraform
         persist-workspace: true
+        environment:
+            TF_VAR_public_key: $id_rsa
         requires:
         - terraform/validate
     - terraform/apply:
         attach-workspace: true
         context: terraform
+        environment:
+            TF_VAR_public_key: $id_rsa
         filters:
           branches:
             only: main
