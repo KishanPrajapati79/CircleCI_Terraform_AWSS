@@ -29,7 +29,7 @@ orbs:
 workflows:
   delete_infra:
     jobs:
-      - destroy_resources:
+      - terraform/destroy:
           executor:
             name: terraform/default
           steps:
