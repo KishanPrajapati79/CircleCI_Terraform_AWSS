@@ -3,30 +3,33 @@
 version: 2.1
 orbs:
   terraform: circleci/terraform@3.1
+# workflows:
+#   deploy_infra:
+#     jobs:
+#     - terraform/fmt:
+#           checkout: true
+#           context: terraform
+#     - terraform/validate:
+#         checkout: true
+#         context: terraform
+#     - terraform/plan:
+#         checkout: true
+#         context: terraform
+#         persist-workspace: true
+#         requires:
+#         - terraform/validate
+#     - terraform/apply:
+#         attach-workspace: true
+#         context: terraform
+#         filters:
+#           branches:
+#             only: main
+#         requires:
+#         - terraform/plan
 workflows:
-  deploy_infra:
+  delete_infra:
     jobs:
-    # - terraform/fmt:
-    #       checkout: true
-    #       context: terraform
-    # - terraform/validate:
-    #     checkout: true
-    #     context: terraform
-    # - terraform/plan:
-    #     checkout: true
-    #     context: terraform
-    #     persist-workspace: true
-    #     requires:
-    #     - terraform/validate
-    # - terraform/apply:
-    #     attach-workspace: true
-    #     context: terraform
-    #     filters:
-    #       branches:
-    #         only: main
-    #     requires:
-    #     - terraform/plan
-    - destroy_infra:
+      - destroy_resources:
           executor:
             name: terraform/default
           steps:
@@ -36,4 +39,3 @@ workflows:
                 command: |
                   terraform init -backend-config="bucket=tfdemostatebucket" -backend-config="key=kishan/circleci.tfstate" -backend-config="region=ap-south-1"
                   terraform destroy -auto-approve
-
