@@ -26,12 +26,24 @@ orbs:
 #             only: main
 #         requires:
 #         - terraform/plan
+# workflows:
+#   delete_infra:
+#     jobs:
+#       - terraform/destroy:
+#           executor:
+#             name: terraform/default
+#           steps:
+#             - checkout
+#             - run:
+#                 name: Terraform Destroy
+#                 command: |
+#                   terraform init -backend-config="bucket=tfdemostatebucket" -backend-config="key=kishan/circleci.tfstate" -backend-config="region=ap-south-1"
+#                   terraform destroy -auto-approve
 workflows:
   delete_infra:
     jobs:
       - terraform/destroy:
-          executor:
-            name: terraform/default
+          executor: terraform/default
           steps:
             - checkout
             - run:
