@@ -16,8 +16,8 @@ workflows:
     - terraform/validate:
         checkout: true
         context: terraform
-        environment:
-            TF_VAR_public_key: $id_rsa
+        # environment:
+        #     TF_VAR_public_key: $id_rsa
     - terraform/plan:
         checkout: true
         context: terraform
