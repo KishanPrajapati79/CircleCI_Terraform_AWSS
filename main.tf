@@ -25,7 +25,7 @@ variable "cidr" {
 }
 
 resource "aws_key_pair" "example" {
-  key_name   = "terraform-demo-kishann"
+  key_name   = "terraform-demo-kishannn"
   public_key = var.id_rsa
 }
 
