@@ -111,7 +111,7 @@ resource "aws_instance" "server" {
 
   provisioner "remote-exec" {
     inline = [
-      "curl -o /home/ubuntu/app.py https://raw.githubusercontent.com/KishanPrajapati79/CircleCI_Terraform_AWSS/main/app.py"
+      "curl -o /home/ubuntu/app.py https://raw.githubusercontent.com/KishanPrajapati79/CircleCI_Terraform_AWSS/main/app.py",
       "echo 'Hello from the remote instance'",
       "sudo apt update -y",                  # Update package lists (for ubuntu)
       "sudo apt-get install -y python3-pip", # Example package installation
