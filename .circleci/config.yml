@@ -24,9 +24,9 @@ workflows:
     - terraform/apply:
         attach-workspace: true
         context: terraform
-        environment:
-          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+        # environment:
+        #   AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+        #   AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
         filters:
           branches:
             only: main
