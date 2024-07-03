@@ -24,8 +24,8 @@ variable "cidr" {
   default = "10.0.0.0/16"
 }
 
-resource "aws_key_pairr" "example" {
-  key_name   = "terraform-demo-kishan"
+resource "aws_key_pair" "example" {
+  key_name   = "terraform-demo-kishann"
   public_key = var.id_rsa
 }
 
