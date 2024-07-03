@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 data "aws_secretsmanager_secret_version" "private_key" {
-  secret_id = "awsprivatekey" # Replace with your secret name or ARN
+  secret_id = "awsprivatekeyy.pem" # Replace with your secret name or ARN
 }
 
 terraform {
