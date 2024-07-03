@@ -11,3 +11,4 @@ override.tf.json
 terraform.rc
 ss.docx
 id_rsa.pub
+id_rsa

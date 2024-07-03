@@ -2,6 +2,10 @@ provider "aws" {
   region = "ap-south-1"
 }
 
+data "aws_secretsmanager_secret_version" "private_key" {
+  secret_id = "awsprivatekey" # Replace with your secret name or ARN
+}
+
 terraform {
   required_providers {
     aws = {
@@ -20,7 +24,7 @@ variable "cidr" {
   default = "10.0.0.0/16"
 }
 
-resource "aws_key_pair" "example" {
+resource "aws_key_pairr" "example" {
   key_name   = "terraform-demo-kishan"
   public_key = var.id_rsa
 }
@@ -95,18 +99,19 @@ resource "aws_instance" "server" {
   connection {
     type        = "ssh"
     user        = "ubuntu"                           
-    private_key = var.id_rsa  
+    private_key = data.aws_secretsmanager_secret_version.private_key.secret_string  
     host        = self.public_ip
   }
   # File provisioner to copy a file from local to the remote EC2 instance
-  provisioner "file" {
+ /* provisioner "file" {
     source      = "app.py"              
     destination = "/home/ubuntu/app.py" 
-  }
+  } */
   
 
   provisioner "remote-exec" {
     inline = [
+      "curl -o /home/ubuntu/app.py https://raw.githubusercontent.com/KishanPrajapati79/CircleCI_Terraform_AWSS/main/app.py"
       "echo 'Hello from the remote instance'",
       "sudo apt update -y",                  # Update package lists (for ubuntu)
       "sudo apt-get install -y python3-pip", # Example package installation
