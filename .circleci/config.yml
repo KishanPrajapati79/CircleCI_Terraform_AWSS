@@ -10,6 +10,14 @@ workflows:
     # - terraform/fmt:
     #       checkout: true
     #       context: terraform
+    - terraform/init:
+          backend-config:
+            bucket: tfdemostatebucket
+            key: kishan/circleci.tfstate
+            region: ap-south-1
+            # access_key: ${AWS_ACCESS_KEY_ID}
+            # secret_key: ${AWS_SECRET_ACCESS_KEY}
+            skip_region_validation: true # (Optional) Skip AWS region validation if using a non-standard AWS region
     - terraform/validate:
         checkout: true
         context: terraform
@@ -19,6 +27,7 @@ workflows:
         persist-workspace: true
         requires:
         - terraform/validate
+        - terraform/init
     - terraform/apply:
         attach-workspace: true
         context: terraform
