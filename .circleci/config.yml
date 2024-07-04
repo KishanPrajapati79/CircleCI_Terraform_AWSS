@@ -225,34 +225,48 @@
 #
 #
 version: 2.1
+
 orbs:
   terraform: circleci/terraform@3.1
 
-jobs:
-  single-job-lifecycle:
-    executor: terraform/default
-    steps:
-      - checkout
-      - terraform/install:
-          arch: amd64
-          os: linux
-          terraform_version: 0.14.2
-      - terraform/validate:
-          path: .
-      - terraform/init:
-          backend_config_file: main.tf
-          path: .
-      - terraform/plan:
-          path: .
-      - terraform/apply:
-          path: .
-      - terraform/destroy:
-          path: .
-
-    working_directory: ~/src
-
 workflows:
-  version: 2
-  single-job-lifecycle:
+  deploy_infra:
     jobs:
-      - single-job-lifecycle
+      - terraform/validate:
+          checkout: true
+          context: terraform
+
+      - terraform/plan:
+          checkout: true
+          context: terraform
+          persist-workspace: true
+          requires:
+            - terraform/validate
+
+      - terraform/apply:
+          attach-workspace: true
+          context: terraform
+          filters:
+            branches:
+              only: main
+          requires:
+            - terraform/plan
+
+      - terraform/destroy:  # Added confirmation step
+          checkout: true
+          context: terraform
+          requires:
+            - terraform/plan  # Optional: Only destroy if plan succeeds
+          steps:
+            - run:
+                name: Confirmation for Destroy
+                when: always  # Run this step even if the previous job fails
+                command: |
+                  echo "This will destroy your AWS infrastructure provisioned by Terraform!"
+                  echo "Are you sure you want to continue? (y/N)"
+                  read -r confirmation
+                  if [[ ! $confirmation =~ ^([Yy])$ ]]; then
+                    echo "Destroy cancelled."
+                    exit 0
+                  fi
+            - terraform destroy  # Destroy resources only if confirmed
