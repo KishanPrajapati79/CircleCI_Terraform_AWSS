@@ -12,3 +12,5 @@ terraform.rc
 ss.docx
 id_rsa.pub
 id_rsa
+.terraform
+.terraform.lock.hcl
