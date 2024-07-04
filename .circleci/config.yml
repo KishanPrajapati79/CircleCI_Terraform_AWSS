@@ -224,10 +224,10 @@
 #
 #
 #
-
 version: 2.1
 orbs:
   terraform: circleci/terraform@3.1
+
 jobs:
   single-job-lifecycle:
     executor: terraform/default
@@ -240,19 +240,19 @@ jobs:
       - terraform/validate:
           path: .
       - terraform/init:
-          backend: true
           backend_config_file: main.tf
           path: .
       - terraform/plan:
-          backend_config_file: main.tf
           path: .
       - terraform/apply:
-          backend_config_file: main.tf
           path: .
       - terraform/destroy:
           path: .
+
     working_directory: ~/src
+
 workflows:
+  version: 2
   single-job-lifecycle:
     jobs:
       - single-job-lifecycle
