@@ -252,16 +252,12 @@ workflows:
           requires:
             - terraform/plan
 
-      - terraform/destroy:  # Added confirmation step
+      - terraform/destroy:  # Added confirmation step (modified)
           checkout: true
           context: terraform
           requires:
             - terraform/plan  # Optional: Only destroy if plan succeeds
-          steps:
-            - run:
-                name: Confirmation for Destroy
-                when: always  # Run this step even if the previous job fails
-                command: |
+          command: |  # Destroy command directly under the job
                   echo "This will destroy your AWS infrastructure provisioned by Terraform!"
                   echo "Are you sure you want to continue? (y/N)"
                   read -r confirmation
@@ -269,4 +265,4 @@ workflows:
                     echo "Destroy cancelled."
                     exit 0
                   fi
-            - terraform destroy  # Destroy resources only if confirmed
+                  terraform destroy
