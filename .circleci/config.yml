@@ -1,32 +1,32 @@
 ---
 
 # https://circleci.com/developer/orbs/orb/circleci/terraform
-version: 2.1
-orbs:
-  terraform: circleci/terraform@3.1
-workflows:
-  deploy_infra:
-    jobs:
-    - terraform/fmt:
-          checkout: true
-          context: terraform
-    - terraform/validate:
-        checkout: true
-        context: terraform
-    - terraform/plan:
-        checkout: true
-        context: terraform
-        persist-workspace: true
-        requires:
-        - terraform/validate
-    - terraform/apply:
-        attach-workspace: true
-        context: terraform
-        filters:
-          branches:
-            only: main
-        requires:
-        - terraform/plan
+# version: 2.1
+# orbs:
+#   terraform: circleci/terraform@3.1
+# workflows:
+#   deploy_infra:
+#     jobs:
+#     - terraform/fmt:
+#           checkout: true
+#           context: terraform
+#     - terraform/validate:
+#         checkout: true
+#         context: terraform
+#     - terraform/plan:
+#         checkout: true
+#         context: terraform
+#         persist-workspace: true
+#         requires:
+#         - terraform/validate
+#     - terraform/apply:
+#         attach-workspace: true
+#         context: terraform
+#         filters:
+#           branches:
+#             only: main
+#         requires:
+#         - terraform/plan
 # workflows:
 #   delete_infra:
 #     jobs:
@@ -165,3 +165,37 @@ workflows:
 #       - destroy:
 #           requires:
 #             - hold
+
+
+version: 2.1
+
+executors:
+  terraform-executor:
+    docker:
+      - image: hashicorp/terraform:latest
+    working_directory: ~/project
+
+jobs:
+  terraform-apply:
+    executor: terraform-executor
+    steps:
+      - checkout
+      - run:
+          name: Setup AWS CLI
+          command: |
+            apk add --no-cache python3 py3-pip
+            pip3 install awscli
+      - run:
+          name: Terraform Init
+          command: terraform init
+      - run:
+          name: Terraform Apply
+          command: terraform apply -auto-approve
+      - run:
+          name: Save Private Key to Env Var
+          command: |
+            PRIVATE_KEY=$(terraform output -raw private_key)
+            echo "export PRIVATE_KEY='${PRIVATE_KEY}'" >> $BASH_ENV
+      - run:
+          name: Verify Private Key
+          command: echo $PRIVATE_KEY
