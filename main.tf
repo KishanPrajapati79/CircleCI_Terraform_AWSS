@@ -274,7 +274,7 @@ resource "aws_instance" "server" {
     source      = "app.py"              
     destination = "/home/ubuntu/app.py" 
   } */
-  
+  /*
 
   provisioner "remote-exec" {
     inline = [
@@ -287,6 +287,7 @@ resource "aws_instance" "server" {
       "sudo python3 app.py &",
     ]
   }
+  */
   
 }
 
