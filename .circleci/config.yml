@@ -252,17 +252,16 @@ workflows:
           requires:
             - terraform/plan
 
-      - terraform/destroy:  # Added confirmation step (modified)
+      - terraform/destroy:  # Added confirmation step (conditional)
           checkout: true
           context: terraform
           requires:
             - terraform/plan  # Optional: Only destroy if plan succeeds
-          command: |  # Destroy command directly under the job
-                  echo "This will destroy your AWS infrastructure provisioned by Terraform!"
-                  echo "Are you sure you want to continue? (y/N)"
-                  read -r confirmation
-                  if [[ ! $confirmation =~ ^([Yy])$ ]]; then
-                    echo "Destroy cancelled."
-                    exit 0
-                  fi
-                  terraform destroy
+          environment:  # Check orb documentation for environment variable syntax
+            DESTROY_CONFIRMED: ${{ circleci trigger info.parameters.DESTROY_CONFIRMED }}
+          command: |
+            if [[ $DESTROY_CONFIRMED == "yes" ]]; then
+              terraform destroy
+            else
+              echo "Destroy cancelled."
+            fi
