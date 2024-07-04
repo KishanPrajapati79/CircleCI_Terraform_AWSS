@@ -257,6 +257,10 @@ resource "aws_instance" "server" {
   key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.webSgtf.id]
   subnet_id              = aws_subnet.sub1tf.id
+  tags = {
+    Name = "TerraformInfraServer"
+    // Add more tags as needed
+  }
 
   connection {
     type        = "ssh"
