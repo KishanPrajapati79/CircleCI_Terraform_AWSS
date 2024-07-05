@@ -14,3 +14,4 @@ id_rsa.pub
 id_rsa
 .terraform
 .terraform.lock.hcl
+instructions.txt
